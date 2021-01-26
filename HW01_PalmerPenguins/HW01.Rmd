@@ -1,0 +1,44 @@
+---
+title: "HW01.Rmd"
+author: "Elena Burkey"
+date: "1/25/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(palmerpenguins)
+summary(penguins)
+```
+
+## **Summary**
+
+### **General Structure:**
+The data set of the penguins have bee organized into 344 rows and 8 columns whereas the penguins raw data has been organized into 344 rows and 17 columns. There are 165 female and 168 male penguins that have been used in the data set. 
+
+### **Descriptive Statistics:** 
+#### Physical Characteristics
+Bill length
+Mean: *43.92 mm*
+Median: *44.45 mm*
+
+Bill Depth
+Mean:*17.15 mm*
+Median:*17.30 mm*
+
+Flipper Length
+Mean:*200.9 mm*
+Median: *197.0 mm*
+
+Body Mass
+Mean: *4202 g*
+Median: *4050 g*
+
+```{r penguins}
+summary(penguins)
+```
+
+```{r plot, echo=FALSE}
+plot(penguins$bill_length_mm)
+```
+
