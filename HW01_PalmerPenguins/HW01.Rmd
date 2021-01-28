@@ -1,0 +1,53 @@
+---
+title: "HW01.Rmd"
+author: "Elena Burkey"
+date: "1/25/2021"
+output: 
+       html_document: default
+       github_document: default
+Theme: Paper
+      
+       
+        
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(palmerpenguins)
+library(ggplot2)
+library(tidyverse)
+library(scales)
+```
+
+### **Summary**
+This data set looks into the physical characteristics of three different species of penguins that come from the Biscoe, Dream, and Torgersen islands. The information below shows a summary of the findings and graphs that compare the different physical characteristics. 
+
+```{r}
+summary(penguins)
+```
+### **General Structure:**
+The data set of the penguins have been organized into 344 rows and 8 columns whereas the penguins raw data has been organized into 344 rows and 17 columns. There are 165 female and 168 male penguins that have been used in the data set. 
+
+
+```{r}
+ggplot(penguins, aes(body_mass_g))+
+  geom_density()
+```
+
+
+```{r}
+ggplot(penguins, aes(flipper_length_mm, body_mass_g)) +
+  geom_point(shape=1) +
+  geom_smooth(method=lm,   # Add linear regression line
+                se=FALSE)    # Don't add shaded confidence region
+```
+
+```{r}
+ggplot(penguins, aes(bill_length_mm, bill_depth_mm)) +
+  geom_point()
+```
+
+```{r}
+ggplot(penguins, aes(sex)) +
+  geom_bar()
+```
