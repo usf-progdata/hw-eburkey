@@ -2,19 +2,30 @@
 title: "HW01.Rmd"
 author: "Elena Burkey"
 date: "1/25/2021"
-output: html_document
+output: 
+       html_document: default
+       github_document: default
+Theme: Paper
+      
+       
+        
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(palmerpenguins)
-summary(penguins)
+library(ggplot2)
+library(tidyverse)
 ```
 
-## **Summary**
+### **Summary**
 
+
+```{r}
+summary(penguins)
+```
 ### **General Structure:**
-The data set of the penguins have bee organized into 344 rows and 8 columns whereas the penguins raw data has been organized into 344 rows and 17 columns. There are 165 female and 168 male penguins that have been used in the data set. 
+The data set of the penguins have been organized into 344 rows and 8 columns whereas the penguins raw data has been organized into 344 rows and 17 columns. There are 165 female and 168 male penguins that have been used in the data set. 
 
 ### **Descriptive Statistics:** 
 #### Physical Characteristics
@@ -34,11 +45,17 @@ Body Mass
 Mean: *4202 g*
 Median: *4050 g*
 
-```{r penguins}
-summary(penguins)
+```{r}
+ggplot(penguins, aes(species, year)) +
+  geom_point(alpha = 0.1) +
+  scale_x_log10("Penguin Species", labels = scales::scal()) +
+  theme_bw() +
+  ylab("Year")
 ```
 
-```{r plot, echo=FALSE}
-plot(penguins$bill_length_mm)
+```{r}
+ggplot(penguins, aes) +
+  geom_histogram(bins = 50)ggplot(penguins, aes()) +
+  geom_histogram(bins = 50)
 ```
 
