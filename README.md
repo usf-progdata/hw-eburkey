@@ -11,5 +11,9 @@ My name is Elena and I am in my senior year of my undergraduate degree here at U
 4. I love nature :mountain:
 5. I enjoy reading in my free time :book: 
 
+![Alt Text](https://assets.simpleviewcms.com/simpleview/image/fetch/c_fill,f_jpg,h_605,q_65,w_1200/https://images.citybreak.com/image.aspx%3FImageId%3D4633779)
+*(Besseggen is a mountain in Norway known for its different colored waters due to temperature differences and it is often discussed in Henrik Ibsen's plays)*
+
 My Favorite Quote: 
 >"We never really grow up, we only learn how to act in public." - Bryan White
+
