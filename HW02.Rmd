@@ -71,13 +71,19 @@ palmerpenguins::penguins %>%
   
 ```
 
-##2.2
-```{R}
-library(palmerpenguins)
+##2.2 
+```{r}
 palmerpenguins::penguins %>%
   group_by(species) %>%
-  total_penguins = n(),
-  average_bill_length_mm = mean(bill_length_mm, na.rm = TRUE)
-  Average_body_mass = mean(body_mass_g, na.rm = TRUE)
-  
+  summarize(
+    total_penguins = n(),
+    mu = mean(penguins$flipper_length_mm, na.rm = TRUE),
+            sigma = sd(penguins$flipper_length_mm, na.rm = TRUE))
+```
+
+```{r}
+palmerpenguins::penguins %>%
+ggplot() +
+  aes( x = species, y = flipper_length_mm) +
+  geom_point(fill = "blue", color = "pink", alpha = .5, size = 2)
 ```
