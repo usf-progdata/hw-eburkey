@@ -2,7 +2,9 @@
 title: "HW02"
 author: "Elena Burkey"
 date: "2/8/2021"
-output: html_document
+output: 
+      html_document: default
+      github_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -39,8 +41,12 @@ gapminder %>%
 ##1.4
 
 ```{R}
+library(gapminder)
 gapminder %>%
-  mutate(gdpPercap <- max(gdpPercap))
+  select(country, gdpPercap) %>% 
+  mutate( gdpPerCapMax = gdpPercap) %>% 
+  group_by(country) %>%
+  filter( gdpPerCapMax == max(gdpPercap))
 ```
 
 ##1.5
@@ -60,17 +66,18 @@ library(palmerpenguins)
 ##2.1
 ```{R}
 palmerpenguins::penguins %>%
-  summarize(mu = mean(penguins$flipper_length_mm),
-            sigma = sd(penguins$flipper_length_mm))
-
+  summarize(mu = mean(penguins$flipper_length_mm, na.rm = TRUE),
+            sigma = sd(penguins$flipper_length_mm, na.rm = TRUE))
+  
 ```
 
 ##2.2
 ```{R}
+library(palmerpenguins)
 palmerpenguins::penguins %>%
-  group_by(islands, flipper_length_mm) %>% summarize(n = n())%>%
-  ggplot() +
-  aes(x = islands, y = flipper_lenght_mm)+
-  geom_point(alpha = .3, size = 2.5) +
-    geom_bar()
+  group_by(species) %>%
+  total_penguins = n(),
+  average_bill_length_mm = mean(bill_length_mm, na.rm = TRUE)
+  Average_body_mass = mean(body_mass_g, na.rm = TRUE)
+  
 ```
