@@ -1,0 +1,100 @@
+---
+title: "HW02"
+author: "Elena Burkey"
+date: "2/8/2021"
+output: 
+      html_document:
+        theme: paper
+      github_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(dplyr)
+library(gapminder)
+library(tidyverse)
+gapminder::gapminder
+```
+
+#Assignment 02
+##Exercise 1:
+##1.1
+
+```{r}
+filter(gapminder, country %in% c( "Albania", "Denmark", "China") & year ==1970:1979)
+```
+
+##1.2
+
+```{r}
+gapminder %>%
+  filter(country %in% c ("Albania", "Denmark", "China") & year == 1970:1979)%>%
+  select(country, gdpPercap)
+```
+
+##1.3
+
+```{r}
+gapminder %>%
+  mutate(dropLifeExp <- lag(lifeExp))
+```
+
+##1.4
+
+```{R}
+library(gapminder)
+gapminder %>%
+  select(country, gdpPercap) %>% 
+  group_by(country)%>%
+  filter(gdpPercap == max(gdpPercap))
+```
+
+##1.5
+```{R}
+gapminder %>%
+  filter(country == "Canada") %>%
+  ggplot() +
+  aes(x = lifeExp, y = gdpPercap)+
+  geom_point(alpha = .3, size = 2.5)
+```
+
+##Exercise 2:
+```{R}
+library(palmerpenguins)
+```
+
+##2.1
+```{R}
+palmerpenguins::penguins %>%
+  summarize(
+    total = n(),
+    flipper_mean = mean(flipper_length_mm, na.rm = TRUE),
+    flipper_sd = sd(flipper_length_mm, na.rm = TRUE),
+    mass_mean = mean(body_mass_g, na.rm = TRUE),
+    mass_sd = sd(body_mass_g, na.rm = TRUE))
+```
+```{r,echo = FALSE}
+palmerpenguins::penguins %>%
+ggplot() +
+  aes(x = body_mass_g, y = flipper_length_mm) +
+        geom_point()
+```
+
+##2.2 
+```{r setup, include = FALSE}
+palmerpenguins::penguins %>%
+  group_by(species) %>%
+  summarize(
+    total_penguins = n(),
+    mu = mean(flipper_length_mm, na.rm = TRUE),
+            sigma = sd(flipper_length_mm, na.rm = TRUE))
+```
+
+```{r,echo = FALSE}
+palmerpenguins::penguins %>%
+ggplot() +
+  aes( x = species, y = flipper_length_mm) +
+  geom_point(fill = "blue", color = "purple", alpha = .3, size = 2.5)+
+  geom_jitter(fill = "blue", color = "purple")
+```
