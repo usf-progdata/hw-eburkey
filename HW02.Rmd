@@ -67,14 +67,18 @@ library(palmerpenguins)
 ##2.1
 ```{R}
 palmerpenguins::penguins %>%
-  summarize(flipper_mean = mean(flipper_length_mm, na.rm = TRUE),
-            flipper_sd = sd(flipper_length_mm, na.rm = TRUE),
-            mass_mean = mean(body_mass_g, na.rm = TRUE),
-            mass_sd = sd(body_mass_g, na.rm = TRUE),
-  ggplot()+
-    aes(x = body_mass_g, y = flipper_length_mm )+
-    geom_point(alpha = .3, size = 2.5)
-  
+  summarize(
+    total = n(),
+    flipper_mean = mean(flipper_length_mm, na.rm = TRUE),
+    flipper_sd = sd(flipper_length_mm, na.rm = TRUE),
+    mass_mean = mean(body_mass_g, na.rm = TRUE),
+    mass_sd = sd(body_mass_g, na.rm = TRUE))
+```
+```{r,echo = FALSE}
+palmerpenguins::penguins %>%
+ggplot() +
+  aes(x = body_mass_g, y = flipper_length_mm) +
+        geom_point()
 ```
 
 ##2.2 
@@ -83,13 +87,14 @@ palmerpenguins::penguins %>%
   group_by(species) %>%
   summarize(
     total_penguins = n(),
-    mu = mean(penguins$flipper_length_mm, na.rm = TRUE),
-            sigma = sd(penguins$flipper_length_mm, na.rm = TRUE))
+    mu = mean(flipper_length_mm, na.rm = TRUE),
+            sigma = sd(flipper_length_mm, na.rm = TRUE))
 ```
 
 ```{r,echo = FALSE}
 palmerpenguins::penguins %>%
 ggplot() +
   aes( x = species, y = flipper_length_mm) +
-  geom_point(fill = "blue", color = "pink", alpha = .5, size = 2)
+  geom_point(fill = "blue", color = "purple", alpha = .3, size = 2.5)+
+  geom_jitter(fill = "blue", color = "purple")
 ```
