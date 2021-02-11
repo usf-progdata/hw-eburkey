@@ -46,9 +46,8 @@ gapminder %>%
 library(gapminder)
 gapminder %>%
   select(country, gdpPercap) %>% 
-  mutate( gdpPerCapMax = gdpPercap) %>% 
-  group_by(country) %>%
-  filter( gdpPerCapMax == max(gdpPercap))
+  group_by(country)%>%
+  filter(gdpPercap == max(gdpPercap))
 ```
 
 ##1.5
@@ -68,8 +67,13 @@ library(palmerpenguins)
 ##2.1
 ```{R}
 palmerpenguins::penguins %>%
-  summarize(mu = mean(penguins$flipper_length_mm, na.rm = TRUE),
-            sigma = sd(penguins$flipper_length_mm, na.rm = TRUE))
+  summarize(flipper_mean = mean(flipper_length_mm, na.rm = TRUE),
+            flipper_sd = sd(flipper_length_mm, na.rm = TRUE),
+            mass_mean = mean(body_mass_g, na.rm = TRUE),
+            mass_sd = sd(body_mass_g, na.rm = TRUE),
+  ggplot()+
+    aes(x = body_mass_g, y = flipper_length_mm )+
+    geom_point(alpha = .3, size = 2.5)
   
 ```
 
