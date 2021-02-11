@@ -72,7 +72,7 @@ palmerpenguins::penguins %>%
 ```
 
 ##2.2 
-```{r}
+```{r setup, include = FALSE}
 palmerpenguins::penguins %>%
   group_by(species) %>%
   summarize(
@@ -81,7 +81,7 @@ palmerpenguins::penguins %>%
             sigma = sd(penguins$flipper_length_mm, na.rm = TRUE))
 ```
 
-```{r}
+```{r,echo = FALSE}
 palmerpenguins::penguins %>%
 ggplot() +
   aes( x = species, y = flipper_length_mm) +
