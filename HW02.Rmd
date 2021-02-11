@@ -3,11 +3,13 @@ title: "HW02"
 author: "Elena Burkey"
 date: "2/8/2021"
 output: 
-      html_document: default
+      html_document:
+        theme: paper
       github_document: default
 ---
 
 ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)
 library(dplyr)
 library(gapminder)
