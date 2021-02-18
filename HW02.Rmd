@@ -3,10 +3,14 @@ title: "HW02"
 author: "Elena Burkey"
 date: "2/8/2021"
 output: 
-      html_document:
-        theme: paper
-      github_document: default
+  html_document:
+    theme: paper
+  github_document: default
 ---
+
+<!-- BMW: Your script doesn't knit when I click the Knit button. You need to be sure that the final version of your script runs successfully before submission. -->
+
+<!-- BMW: Don't put echo=FALSE in your chunk options. That hides your code from the output, so I can't review as easily -->
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -14,18 +18,26 @@ library(ggplot2)
 library(dplyr)
 library(gapminder)
 library(tidyverse)
-gapminder::gapminder
+library(palmerpenguins) # BMW: Put all library calls at the top of the file
+# gapminder::gapminder # BMW: Don't print out things unecessarily in your final script.
 ```
 
-#Assignment 02
-##Exercise 1:
-##1.1
+# Assignment 02
+
+<!-- BMW: Put blank lines between paragraphs in markdown. --> 
+<!-- BMW: You need a space after the # -->
+
+## Exercise 1:
+
+## 1.1
 
 ```{r}
-filter(gapminder, country %in% c( "Albania", "Denmark", "China") & year ==1970:1979)
+filter(gapminder, country %in% c("Albania", "Denmark", "China") & year %in% 1970:1979)
 ```
 
-##1.2
+<!-- BMW: No, == doesn't work for the year. That compares each row to just one value. First 1970, then 1971, then 1972, etc. You want to compare each row to _all_ of the values in 1970:1979, so you need to use %in% like above. Alternatively, you could do `year > 1969 & year < 1980` -->
+
+## 1.2
 
 ```{r}
 gapminder %>%
@@ -33,68 +45,88 @@ gapminder %>%
   select(country, gdpPercap)
 ```
 
-##1.3
+<!-- BMW: Same comment as above -->
+
+## 1.3
 
 ```{r}
 gapminder %>%
-  mutate(dropLifeExp <- lag(lifeExp))
+  mutate(dropLifeExp <- lag(lifeExp)) # BMW: Don't use <- inside of functions. That is _only_ for saving results to a new object. See also below.
 ```
 
-##1.4
+<!-- BMW: No, lag() just shows the previous row of data. You need to combine that with other functions to (1) compute the difference between each row and the previous rows, then (2) filter to show just the values where life expectancy has dropped. Like this: -->
 
-```{R}
-library(gapminder)
+```{r}
+gapminder %>% 
+  group_by(country) %>% 
+  mutate(changeLifeExp = lifeExp - lag(lifeExp)) %>% 
+  filter(changeLifeExp < 0)
+```
+
+
+## 1.4
+
+<!-- BMW: Code chunks need to start with r (lowercase), not R -->
+
+```{r}
+library(gapminder) # BMW: You only need to call library() once for a package in a script. Put all of them at the top of the script.
 gapminder %>%
   select(country, gdpPercap) %>% 
   group_by(country)%>%
   filter(gdpPercap == max(gdpPercap))
 ```
 
-##1.5
-```{R}
+## 1.5
+
+```{r}
 gapminder %>%
   filter(country == "Canada") %>%
   ggplot() +
-  aes(x = lifeExp, y = gdpPercap)+
-  geom_point(alpha = .3, size = 2.5)
+  aes(x = lifeExp, y = gdpPercap) +
+  geom_point(alpha = .3, size = 2.5) +
+  scale_y_continuous(trans = "log10") # BMW: The directions asked for gdp to be on a log scale.
 ```
 
-##Exercise 2:
-```{R}
-library(palmerpenguins)
-```
+## Exercise 2:
 
-##2.1
-```{R}
-palmerpenguins::penguins %>%
+## 2.1
+
+```{r}
+palmerpenguins::penguins %>% # BMW: Once you library() palmerpenguins, you don't need to put palmerpenguins:: before penguins. You can just call the object by name.  
   summarize(
     total = n(),
     flipper_mean = mean(flipper_length_mm, na.rm = TRUE),
     flipper_sd = sd(flipper_length_mm, na.rm = TRUE),
     mass_mean = mean(body_mass_g, na.rm = TRUE),
-    mass_sd = sd(body_mass_g, na.rm = TRUE))
-```
-```{r,echo = FALSE}
-palmerpenguins::penguins %>%
-ggplot() +
-  aes(x = body_mass_g, y = flipper_length_mm) +
-        geom_point()
+    mass_sd = sd(body_mass_g, na.rm = TRUE)
+  )
 ```
 
-##2.2 
-```{r setup, include = FALSE}
+```{r}
+palmerpenguins::penguins %>%
+  ggplot() +
+  aes(x = body_mass_g, y = flipper_length_mm) +
+  geom_point()
+```
+
+## 2.2 
+
+<!-- BMW: Don't put `include = FALSE` in your chunk options here. That hides the output when it's knit. -->
+<!-- BMW: Your code chunks need to have unique names. This one was duplicate titled `setup` -->
+
+```{r}
 palmerpenguins::penguins %>%
   group_by(species) %>%
   summarize(
     total_penguins = n(),
     mu = mean(flipper_length_mm, na.rm = TRUE),
-            sigma = sd(flipper_length_mm, na.rm = TRUE))
+    sigma = sd(flipper_length_mm, na.rm = TRUE)
+  )
 ```
 
-```{r,echo = FALSE}
+```{r}
 palmerpenguins::penguins %>%
-ggplot() +
-  aes( x = species, y = flipper_length_mm) +
-  geom_point(fill = "blue", color = "purple", alpha = .3, size = 2.5)+
-  geom_jitter(fill = "blue", color = "purple")
+  ggplot() +
+  aes(x = species, y = flipper_length_mm) +
+  geom_jitter(fill = "blue", color = "purple", height = 0, width = .5) # BMW: Only geom_jitter() here. It plots points just like geom_point(). Also, when you use jitter with 1 categorical and 1 continuous variable, don't jitter on axis that has continuous variable. See the height and width arguments
 ```
