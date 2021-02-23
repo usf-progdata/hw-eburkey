@@ -27,7 +27,7 @@ library(ggdist)
 You will analyze data looking at the relationship between **green reputation** and three personality traits--**compassion**, **intellectual curiosity**, and **openness to experiences**.
 The dataset includes data from **students** and **non-students**.
 
-# 1)
+## 1)
 Inspect the item responses (e.g., with graphs or by summarizing distinct values).     Is anything unusual?
 
 ```{r}
@@ -50,18 +50,50 @@ summary(green_data.melt)
 
 ```
 
-#2
+## 2)
 Compute total scores for the four scales. 
     Recode variables as needed.
 
 ```{r}
-reverse_recode <- dictionary %>%
-  
+reversed <- dictionary %>%
+  filter(Keying == -1 | Keying == -2)%>%
+  pull(Item)
 ```
 
+```{r recode}
+green_data %>%
+  mutate(student = recode (student, "1" = "Not_Student", "2" = "Student", .missing = "No_Response", .default = "Unknown")) %>%
+  select(id, student)
+```
 
-  3. Rescale the variables so that they go from 0-100 instead of the original range.
+- Recoded the data to organize it properly and categorize it in a way that is more clear 
+
+
+```{r}
+green_data %>%
+  mutate(across(all_of(reversed), 
+                ~ recode(.x, 
+                         "5" = "1",
+                         "4" = "2",
+                         "3" = "3",
+                         "2" = "4",
+                         "1" = "5")))
+```
+ 
+ - The -99 data is recoded into NA so that it does not influence the data 
+
+```{r}
+summary(reversed)
+```
+ 
+## 3)
+Rescale the variables so that they go from 0-100 instead of the original range.
      Name the recaled variables `*_pomp`.
+
+```{r}
+
+```
+     
   4. Make plots that illustrate the distributions of the 4 POMP-scored variables.
   5. Make scatterplots showing the relationships between **green reputation** and each personality trait.
      Include trend lines for **students** and **non-students**.
