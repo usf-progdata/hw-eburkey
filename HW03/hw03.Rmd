@@ -111,14 +111,12 @@ Rescale the variables so that they go from 0-100 instead of the original range.
 Green_Rescale <- green_data %>%
   mutate(across(all_of(reversed),~ recode(.x, "1" = 0, "2" = 25, "4" = 75, "5" = 100))) %>%
   rowwise() %>%
-  mutate()
+  mutate(
+    green_pomp = mean(c_across(green1 : green5), na.rm = TRUE),
+    comp_pomp = mean(c_across(comp1 : comp10), na.rm = TRUE), 
+    intel_pomp = mean(c_across(intel1 : intel10), na.rm = TRUE),
+    open_pomp = mean(c_across(open1 : open10), na.rm = TRUE)) %>%
     
-    
-    green_pomp = rescale(tot_green, to = C(0, 100), from = C(1,5)),
-    comp_pomp = rescale(tot_comp, to = C(0, 100), from = C(1,5)), 
-    intel_pomp = rescale(tot_intel, to = C(0, 100), from = C(1,5)),
-    open_pomp = rescale(tot_open, to = C(0, 100), from = C(1,5))) %>%
-  select(id, student, green_pomp, comp_pomp, intel_pomp, open_pomp)
 ```
      
 ##4)
