@@ -41,7 +41,7 @@ lotr
 ```
 
 
-3. Re-lengthen the wide LOTR data from Question 2 above.
+3. Re-lengthen the wide LOTR data from Question 2 above. 
 
 ```{r}
 lotr_wide %>% 
