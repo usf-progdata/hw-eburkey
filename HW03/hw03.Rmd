@@ -49,6 +49,11 @@ summary(green_data.melt)
 
 - It can be seen in the data that -99 is being said to be the minimum value and therefore needs to be recoded 
 
+```{r}
+ggplot(green_data.melt) + 
+  aes( x = value, y = id) +
+  geom_point() +
+```
 
 ## 2)
 Compute total scores for the four scales. 
@@ -75,29 +80,26 @@ green_data %>%
 - Taking away  the -99 values and coding them into missing data 
 
 ```{r}
-Green_R <- Green_New %>%
-  mutate(across(all_of(green_data), 
+Green_R <- green_data %>%
+  mutate(across(all_of(reversed), 
                 ~ recode(.x, 
-                         "5" = "1",
-                         "4" = "2",
-                         "3" = "3",
-                         "2" = "4",
-                         "1" = "5")))
+                         "5" = 1,
+                         "4" = 2,
+                         "3" = 3,
+                         "2" = 4,
+                         "1" = 5)))
 ```
 
 - Recoded the data to organize it properly and categorize it in a way that is more clear 
 
 
 ```{r}
-Green_Calculations <- Green_R %>%
+Green_Calculations <- green_data %>%
   rowwise() %>%
-  group_by(id) %>%
-  mutate(total_green = sum(c_across(green1 : green5), na.rm = TRUE),
-          total_comp = sum(C_across(comp1 : comp10), na.rm = TRUE),
-          total_intel = sum(c_across(intel1 : intel10),na.rm = TRUE),
-          total_open = sum(c_across(open1 : open10),na.rm = TRUE)) %>%
-  na.omit() %>%
-  select(id, student, total_green, total_comp, total_intel, total_open)
+  mutate(tot_green = mean(c_across(green1 : green5), na.rm = TRUE),
+         tot_comp = mean(c_across(comp1 : comp10), na.rm = TRUE), 
+         tot_intel = mean(c_across(intel1 : intel10), na.rm = TRUE),
+         tot_open = mean(c_across(open1 : open10), na.rm = TRUE))
 ```
 
  
@@ -106,12 +108,16 @@ Rescale the variables so that they go from 0-100 instead of the original range.
      Name the recaled variables `*_pomp`.
 
 ```{r}
-Green <- Green_Calculations %>%
-  mutate(
-    green_pomp = rescale (total_green, to = C(0, 100), from = C(1,5)),
-    comp_pomp = rescale (total_comp, to = C(0, 100), from = C(1,5)), 
-    intel_pomp = rescale (total_intel, to = C(0, 100), from = C(1,5)),
-    open_pomp = rescale (total_open, to = C(0, 100), from = C(1,5))) %>%
+Green_Rescale <- green_data %>%
+  mutate(across(all_of(reversed),~ recode(.x, "1" = 0, "2" = 25, "4" = 75, "5" = 100))) %>%
+  rowwise() %>%
+  mutate()
+    
+    
+    green_pomp = rescale(tot_green, to = C(0, 100), from = C(1,5)),
+    comp_pomp = rescale(tot_comp, to = C(0, 100), from = C(1,5)), 
+    intel_pomp = rescale(tot_intel, to = C(0, 100), from = C(1,5)),
+    open_pomp = rescale(tot_open, to = C(0, 100), from = C(1,5))) %>%
   select(id, student, green_pomp, comp_pomp, intel_pomp, open_pomp)
 ```
      
