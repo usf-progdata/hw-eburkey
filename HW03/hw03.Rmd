@@ -101,8 +101,10 @@ Rescale the variables so that they go from 0-100 instead of the original range.
      Name the recaled variables `*_pomp`.
 
 ```{r}
-green_data %>%
-  mutate(gree)
+DataSet3 <- green_data %>%
+  mutate(across(all_of(reversed), 
+                ~ recode(.x, "1" = 0, "2" = 25, "4" = 75, "5" = 100))) %>%
+  
   
 ```
      
