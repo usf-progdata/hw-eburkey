@@ -68,15 +68,6 @@ DataSet2 <- green_data %>%
 
 ```{r}
 green_data %>%
-  mutate(across(everything(),
-                ~ na_if(.x, -99)))
-```
-
-- Recoded the data to organize it properly and categorize it in a way that is more clear 
-
-
-```{r}
-green_data %>%
   mutate(across(all_of(reversed), 
                 ~ recode(.x, 
                          "5" = "1",
@@ -87,14 +78,30 @@ green_data %>%
                         .names = "{.col}r"))
 ```
 
-```{r}
+- Recoded the data to organize it properly and categorize it in a way that is more clear 
 
+```{r}
+green_data %>%
+  mutate(across(everything(),
+                ~ na_if(.x, -99)))
+```
+
+- Takign away all of the -99 values and codign them into missing data 
+
+```{r}
+green_data %>%
+  rowwise() %>%
+  group_by(id) %>%
+  mutate(total_green = sum(C(green1 : green5), na.rm = TRUE),
+          total_comp = sum(C(comp1 : comp10), na.rm = TRUE),
+          total_intel = sum(C(intel1 : intel10),na.rm = TRUE),
+          total_open = sum(C(open1 : open10),na.rm = TRUE))%>%
 ```
 
 ```{r}
 
-    
 ```
+
  
 ## 3)
 Rescale the variables so that they go from 0-100 instead of the original range.
