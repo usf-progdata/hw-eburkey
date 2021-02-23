@@ -47,7 +47,7 @@ green_data.melt <- melt(green_data, measures.var = across (c:green1:open10))
 summary(green_data.melt)
 ```
 
-- It can be seen in the data set that there are values that do not seem to fit into the set such as -99
+- It can be seen in the data that -99 is being said to be the minimum value and therefore needs to be recoded 
 
 
 ## 2)
@@ -61,24 +61,10 @@ reversed <- dictionary %>%
 ```
 
 ```{r recode}
-DataSet2 <- green_data %>%
+Green_New <- green_data %>%
   mutate(student = recode (student, "1" = "Not_Student", "2" = "Student", .missing = "No_Response", .default = "Unknown")) %>%
   select(id, student)
 ```
-
-```{r}
-green_data %>%
-  mutate(across(all_of(reversed), 
-                ~ recode(.x, 
-                         "5" = "1",
-                         "4" = "2",
-                         "3" = "3",
-                         "2" = "4",
-                         "1" = "5"), 
-                        .names = "{.col}r"))
-```
-
-- Recoded the data to organize it properly and categorize it in a way that is more clear 
 
 ```{r}
 green_data %>%
@@ -86,20 +72,32 @@ green_data %>%
                 ~ na_if(.x, -99)))
 ```
 
-- Takign away all of the -99 values and codign them into missing data 
+- Taking away  the -99 values and coding them into missing data 
 
 ```{r}
-green_data %>%
-  rowwise() %>%
-  group_by(id) %>%
-  mutate(total_green = sum(C(green1 : green5), na.rm = TRUE),
-          total_comp = sum(C(comp1 : comp10), na.rm = TRUE),
-          total_intel = sum(C(intel1 : intel10),na.rm = TRUE),
-          total_open = sum(C(open1 : open10),na.rm = TRUE))%>%
+Green_R <- Green_New %>%
+  mutate(across(all_of(green_data), 
+                ~ recode(.x, 
+                         "5" = "1",
+                         "4" = "2",
+                         "3" = "3",
+                         "2" = "4",
+                         "1" = "5")))
 ```
 
-```{r}
+- Recoded the data to organize it properly and categorize it in a way that is more clear 
 
+
+```{r}
+Green_Calculations <- Green_R %>%
+  rowwise() %>%
+  group_by(id) %>%
+  mutate(total_green = sum(c_across(green1 : green5), na.rm = TRUE),
+          total_comp = sum(C_across(comp1 : comp10), na.rm = TRUE),
+          total_intel = sum(c_across(intel1 : intel10),na.rm = TRUE),
+          total_open = sum(c_across(open1 : open10),na.rm = TRUE)) %>%
+  na.omit() %>%
+  select(id, student, total_green, total_comp, total_intel, total_open)
 ```
 
  
@@ -108,11 +106,13 @@ Rescale the variables so that they go from 0-100 instead of the original range.
      Name the recaled variables `*_pomp`.
 
 ```{r}
-DataSet3 <- green_data %>%
-  mutate(across(all_of(reversed), 
-                ~ recode(.x, "1" = 0, "2" = 25, "4" = 75, "5" = 100))) %>%
-  
-  
+Green <- Green_Calculations %>%
+  mutate(
+    green_pomp = rescale (total_green, to = C(0, 100), from = C(1,5)),
+    comp_pomp = rescale (total_comp, to = C(0, 100), from = C(1,5)), 
+    intel_pomp = rescale (total_intel, to = C(0, 100), from = C(1,5)),
+    open_pomp = rescale (total_open, to = C(0, 100), from = C(1,5))) %>%
+  select(id, student, green_pomp, comp_pomp, intel_pomp, open_pomp)
 ```
      
 ##4)
