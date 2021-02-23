@@ -3,34 +3,41 @@ title: "HW01.Rmd"
 author: "Elena Burkey"
 date: "1/25/2021"
 output: 
-       html_document: default
-       github_document: default
-Theme: Paper
-      
-       
-        
+  html_document:
+    theme: paper
+  github_document: default  
 ---
+
+<!-- Take a look at how I edited your YAML header above. You specified the theme for the HTML output incorrectly. First, only indent suboptions by two spaces. Second, suboptions for HTML, like theme need to go under html_document. -->
+
+<!-- Please also knit to github_document (you need to click the knit button twice--once for each format. This makes it easiest for me to look at the rendered results. -->
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(palmerpenguins)
 library(ggplot2)
-library(tidyverse)
+library(tidyverse) # library(tidyverse) also loads ggplot2, so you don't need to call these separately. 
 library(scales)
 ```
 
-### **Summary**
+### Summary
+
+<!-- Headings are usually formatted in bold already, so no need to separately add bold. -->
+
 This data set looks into the physical characteristics of three different species of penguins that come from the Biscoe, Dream, and Torgersen islands. The information below shows a summary of the findings and graphs that compare the different physical characteristics. 
 
 ```{r}
 summary(penguins)
 ```
-### **General Structure:**
+### General Structure:
+
 The data set of the penguins have been organized into 344 rows and 8 columns whereas the penguins raw data has been organized into 344 rows and 17 columns. There are 165 female and 168 male penguins that have been used in the data set. 
 
+<!-- It's a style choice, but I like this structure with aes() outside better. Makes the code easier to read. Either way is fine. -->
 
 ```{r}
-ggplot(penguins, aes(body_mass_g))+
+ggplot(penguins) +
+  aes(body_mass_g) +
   geom_density()
 ```
 
@@ -38,9 +45,11 @@ ggplot(penguins, aes(body_mass_g))+
 ```{r}
 ggplot(penguins, aes(flipper_length_mm, body_mass_g)) +
   geom_point(shape=1) +
-  geom_smooth(method=lm,   # Add linear regression line
-                se=FALSE)    # Don't add shaded confidence region
+  geom_smooth(method = lm,   # Add linear regression line
+                se = FALSE)    # Don't add shaded confidence region
 ```
+
+<!-- To help readability, place spaces around = and + and other operators -->
 
 ```{r}
 ggplot(penguins, aes(bill_length_mm, bill_depth_mm)) +
@@ -51,3 +60,5 @@ ggplot(penguins, aes(bill_length_mm, bill_depth_mm)) +
 ggplot(penguins, aes(sex)) +
   geom_bar()
 ```
+
+<!-- Best practice, always end a script with a blank line. -->
