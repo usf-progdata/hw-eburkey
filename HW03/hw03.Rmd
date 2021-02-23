@@ -20,6 +20,7 @@ library(tidyverse)
 library(gridExtra)
 library(reshape2)
 library(ggdist)
+library(psychTools)
 ```
 
 # Homework 03
@@ -34,6 +35,8 @@ Inspect the item responses (e.g., with graphs or by summarizing distinct values)
 as_tibble(green_data)
 ```
 
+- Looking at the data set it seems that there are quite a bit of NA values which could mean a variety of things along with 
+
 ```{r}
 green_data.melt <- melt(green_data, measures.var = across (c:green1:open10))
 ```
@@ -44,11 +47,8 @@ green_data.melt <- melt(green_data, measures.var = across (c:green1:open10))
 summary(green_data.melt)
 ```
 
-- It can be seen in the data set that there are values that do not seem to fit into the set such as -99 and that there are repeated values
+- It can be seen in the data set that there are values that do not seem to fit into the set such as -99
 
-```{r}
-
-```
 
 ## 2)
 Compute total scores for the four scales. 
@@ -61,9 +61,15 @@ reversed <- dictionary %>%
 ```
 
 ```{r recode}
-green_data %>%
+DataSet2 <- green_data %>%
   mutate(student = recode (student, "1" = "Not_Student", "2" = "Student", .missing = "No_Response", .default = "Unknown")) %>%
   select(id, student)
+```
+
+```{r}
+green_data %>%
+  mutate(across(everything(),
+                ~ na_if(.x, -99)))
 ```
 
 - Recoded the data to organize it properly and categorize it in a way that is more clear 
@@ -77,13 +83,17 @@ green_data %>%
                          "4" = "2",
                          "3" = "3",
                          "2" = "4",
-                         "1" = "5"), .names = "{.col}r"))
+                         "1" = "5"), 
+                        .names = "{.col}r"))
 ```
- 
- 
 
 ```{r}
 
+```
+
+```{r}
+
+    
 ```
  
 ## 3)
@@ -91,14 +101,24 @@ Rescale the variables so that they go from 0-100 instead of the original range.
      Name the recaled variables `*_pomp`.
 
 ```{r}
-
+green_data %>%
+  mutate(gree)
+  
 ```
      
-  4. Make plots that illustrate the distributions of the 4 POMP-scored variables.
-  5. Make scatterplots showing the relationships between **green reputation** and each personality trait.
+##4)
+Make plots that illustrate the distributions of the 4 POMP-scored variables.
+
+
+##5)
+Make scatterplots showing the relationships between **green reputation** and each personality trait.
      Include trend lines for **students** and **non-students**.
      What do these plots show?
-  6. Compare **green reputation** for students and non-students using a **rainfall plot** (bar + density + data points).
-  7. Compute a summary table of means, SDs, medians, minima, and maxima for the four total scores for students and non-students.
+     
+##6)
+Compare **green reputation** for students and non-students using a **rainfall plot** (bar + density + data points).
+ 
+#7) 
+Compute a summary table of means, SDs, medians, minima, and maxima for the four total scores for students and non-students.
   
 In your assignment, prepare an RMarkdown file that includes both the coding and (for 4-7) narrative descriptions of your results.
