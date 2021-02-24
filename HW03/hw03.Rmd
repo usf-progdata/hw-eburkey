@@ -50,9 +50,9 @@ summary(green_data.melt)
 - It can be seen in the data that -99 is being said to be the minimum value and therefore needs to be recoded 
 
 ```{r}
-ggplot(green_data.melt) + 
-  aes( x = value, y = id) +
-  geom_point() +
+ggplot(green_data.melt, aes(x = value) +
+         geom_histogram() +
+         theme_bw()
 ```
 
 ## 2)
@@ -109,14 +109,13 @@ Rescale the variables so that they go from 0-100 instead of the original range.
 
 ```{r}
 Green_Rescale <- green_data %>%
-  mutate(across(all_of(reversed),~ recode(.x, "1" = 0, "2" = 25, "4" = 75, "5" = 100))) %>%
+  mutate(across(all_of(reversed), ~ recode(.x, "1" = 0, "2" = 25, "4" = 75, "5" = 100), .names = "{.col}_pomp")) %>%
   rowwise() %>%
   mutate(
     green_pomp = mean(c_across(green1 : green5), na.rm = TRUE),
     comp_pomp = mean(c_across(comp1 : comp10), na.rm = TRUE), 
     intel_pomp = mean(c_across(intel1 : intel10), na.rm = TRUE),
-    open_pomp = mean(c_across(open1 : open10), na.rm = TRUE)) %>%
-    
+    open_pomp = mean(c_across(open1 : open10), na.rm = TRUE))
 ```
      
 ##4)
