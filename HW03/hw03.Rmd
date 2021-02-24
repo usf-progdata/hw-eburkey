@@ -50,9 +50,10 @@ summary(green_data.melt)
 - It can be seen in the data that -99 is being said to be the minimum value and therefore needs to be recoded 
 
 ```{r}
-ggplot(green_data.melt, aes(x = value) +
-         geom_histogram() +
-         theme_bw()
+ggplot(green_data.melt) +
+  aes(X = id, Y = value)
+  geom_point(alpha = 0.1) +
+  theme_bw()
 ```
 
 ## 2)
@@ -121,6 +122,21 @@ Green_Rescale <- green_data %>%
 ##4)
 Make plots that illustrate the distributions of the 4 POMP-scored variables.
 
+```{r}
+ggplot(Green_Rescale) +
+  aes(x = green_pomp) +
+  geom_histogram(fill = "green", fill = "purple") +
+  theme_bw() +
+  ggtitle("Green Data")
+
+ggplot(Green_Rescale) +
+  aes(x = comp_pomp) +
+  geom_histogram(fill = "purple", fill = "grey") +
+  theme_bw() +
+  ggtitle("Comp Data")
+
+
+```
 
 ##5)
 Make scatterplots showing the relationships between **green reputation** and each personality trait.
