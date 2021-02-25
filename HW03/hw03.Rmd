@@ -3,14 +3,14 @@ title: "HW03"
 author: "Elena Burkey"
 date: "2/22/2021"
 output: 
+  github_document: default
   html_document:
     theme: paper
-  github_document: default
 ---
 
 
 
-```{r setup, include = False}
+```{r setup, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 dictionary <- readr::read_csv("green_dictionary.csv")
 green_data <- readr::read_csv("green_data.csv")
@@ -21,6 +21,8 @@ library(gridExtra)
 library(reshape2)
 library(ggdist)
 library(psychTools)
+library(gridExtra)
+library(dplyr)
 ```
 
 # Homework 03
@@ -35,20 +37,26 @@ Inspect the item responses (e.g., with graphs or by summarizing distinct values)
 as_tibble(green_data)
 ```
 
-- Looking at the data set it seems that there are quite a bit of NA values which could mean a variety of things along with 
+- Looking at the data set it seems that there are quite a bit of NA values. 
 
 ```{r}
 green_data.melt <- melt(green_data, measures.var = across (c:green1:open10))
 ```
 
-- Brings the data from columns to rows by using the melt function and will show everything in the data set in such a manner that it's easily seen if there are repeating values or if anything is off with the data set 
+- Brings the data from columns to rows by using the melt function and will show everything in the data set in such a manner that it's easily readable. 
 
 ```{r}
 summary(green_data.melt)
 ```
 
-- It can be seen in the data set that there are values that do not seem to fit into the set such as -99
+- It can be seen in the data that -99 is being said to be the minimum value and therefore needs to be recoded. 
 
+```{r}
+ggplot(green_data.melt) +
+  aes(X = id, Y = value)
+  geom_point(alpha = 0.1) +
+  theme_bw()
+```
 
 ## 2)
 Compute total scores for the four scales. 
@@ -61,24 +69,10 @@ reversed <- dictionary %>%
 ```
 
 ```{r recode}
-DataSet2 <- green_data %>%
+Green_New <- green_data %>%
   mutate(student = recode (student, "1" = "Not_Student", "2" = "Student", .missing = "No_Response", .default = "Unknown")) %>%
   select(id, student)
 ```
-
-```{r}
-green_data %>%
-  mutate(across(all_of(reversed), 
-                ~ recode(.x, 
-                         "5" = "1",
-                         "4" = "2",
-                         "3" = "3",
-                         "2" = "4",
-                         "1" = "5"), 
-                        .names = "{.col}r"))
-```
-
-- Recoded the data to organize it properly and categorize it in a way that is more clear 
 
 ```{r}
 green_data %>%
@@ -86,21 +80,71 @@ green_data %>%
                 ~ na_if(.x, -99)))
 ```
 
-- Takign away all of the -99 values and codign them into missing data 
+- Taking away  the -99 values and coding them into missing data 
 
 ```{r}
-green_data %>%
+Green_R <- green_data %>%
+  mutate(across(all_of(reversed), 
+                ~ recode(.x, 
+                         "5" = 1,
+                         "4" = 2,
+                         "3" = 3,
+                         "2" = 4,
+                         "1" = 5)))
+```
+
+- Recoded the data to organize it properly and categorize it in a way that is more clear 
+```{r}
+new_green_data <- green_data %>%
+  mutate(across(everything(),
+                ~na_if(.x, -99))) %>%
+  mutate(student = recode(student, "1" = "Not_Student", "2" = "Student", .missing = "No_Response", .default = "Unknown")) %>%
+  mutate(across(all_of(reversed),
+                ~ recode(.x, "5" = 1,
+                         "4" = 2,
+                         "3" = 3,
+                         "2" = 4,
+                         "1" = 5),
+                .names = "{.col}r"))
+```
+
+```{r}
+Data1 <- new_green_data %>%
   rowwise() %>%
-  group_by(id) %>%
-  mutate(total_green = sum(C(green1 : green5), na.rm = TRUE),
-          total_comp = sum(C(comp1 : comp10), na.rm = TRUE),
-          total_intel = sum(C(intel1 : intel10),na.rm = TRUE),
-          total_open = sum(C(open1 : open10),na.rm = TRUE))%>%
+  mutate(tot_green = mean(c(green1, green2r, green3, green4, green5), na.rm = TRUE),
+         tot_comp = mean(c(comp1, comp2, comp3, comp4, comp5, comp6r, comp7r, comp8r, comp9r, comp10r),
+                         na.rm = TRUE),
+         tot_intel = mean(c(intel1, intel2, intel3, intel4, intel5, intel6, intel7r, intel8r, intel9r, intel10r),
+                          na.rm = TRUE),
+         tot_open = mean(c(open1, open2, open3, open4, open5, open6, open7r, open8r, open9r, open10r),
+                         na.rm = TRUE)) %>%
+  na.omit() %>%
+  select(id, tot_green, tot_comp, tot_open, tot_intel, student)
 ```
 
 ```{r}
-
+  New_Data <- new_green_data %>% 
+  rowwise() %>% 
+  mutate(tot_green = mean(c(green1, green2r, green3, green4, green5), na.rm = TRUE),
+         tot_comp = mean(c(comp1, comp2, comp3, comp4, comp5, comp6r, comp7r, comp8r, comp9r, comp10r), 
+                         na.rm = TRUE),
+         tot_intel = mean(c(intel1, intel2, intel3, intel4, intel5, intel6, intel7r, intel8r, intel9r, intel10r),
+                          na.rm = TRUE),
+         tot_open = mean(c(open1, open2, open3, open4, open5, open6, open7r, open8r, open9r, open10r), 
+                         na.rm = TRUE)) %>% 
+  na.omit()
 ```
+
+```{r}
+New_Data %>% 
+  group_by(student) %>% 
+  summarize(green_mean = mean(tot_green, na.rm = TRUE),
+            comp_mean = mean(tot_comp, na.rm = TRUE),
+            intel_mean = mean(tot_intel, na.rm = TRUE),
+            open_mean = mean(tot_open, na.rm = TRUE))
+```
+
+- Here I am summarizing the data based student.
 
  
 ## 3)
@@ -108,26 +152,124 @@ Rescale the variables so that they go from 0-100 instead of the original range.
      Name the recaled variables `*_pomp`.
 
 ```{r}
-DataSet3 <- green_data %>%
-  mutate(across(all_of(reversed), 
-                ~ recode(.x, "1" = 0, "2" = 25, "4" = 75, "5" = 100))) %>%
-  
-  
+Green_Rescale <- green_data %>%
+  mutate(across(all_of(reversed), ~ recode(.x, "1" = 0, "2" = 25, "3" = 50, "4" = 75, "5" = 100), .names = "{.col}_pomp")) %>%
+  rowwise() %>%
+  mutate(
+    green_pomp = sum(c_across(green1 : green5), na.rm = TRUE),
+    comp_pomp = sum(c_across(comp1 : comp10), na.rm = TRUE), 
+    intel_pomp = sum(c_across(intel1 : intel10), na.rm = TRUE),
+    open_pomp = sum(c_across(open1 : open10), na.rm = TRUE))
 ```
+
+- I recoded the variables so that it went from  0-100 and then rescaled the items. 
      
 ##4)
 Make plots that illustrate the distributions of the 4 POMP-scored variables.
 
+```{r}
+ggplot(Green_Rescale) +
+  aes(x = green_pomp) +
+  geom_histogram(fill = "green", fill = "grey") +
+  theme_bw() +
+  ggtitle("Green Data")
+```
+
+```{r}
+ggplot(Green_Rescale) +
+  aes(x = comp_pomp) +
+  geom_histogram(fill = "purple", fill = "grey") +
+  theme_bw() +
+  ggtitle("Comp Data")
+```
+
+```{r}
+ggplot(Green_Rescale) +
+  aes(x = intel_pomp) +
+  geom_histogram(fill = "red", fill = "grey") +
+  theme_bw() +
+  ggtitle("Intel Data")
+```
+
+```{r}
+ggplot(Green_Rescale) +
+  aes(x = open_pomp) +
+  geom_histogram(fill = "blue", fill = "grey") +
+  theme_bw() +
+  ggtitle("Open Data")
+```
+
+- Looking at the different graphs, all of the graphs except for the Green Data graph were not equally distributed. 
 
 ##5)
 Make scatterplots showing the relationships between **green reputation** and each personality trait.
      Include trend lines for **students** and **non-students**.
      What do these plots show?
-     
+```{r} 
+Green_Rescale %>% 
+  ggplot() +
+  aes(x = green_pomp, y = comp_pomp, color = student) +
+  geom_jitter(alpha = .2, size = 8) +
+  geom_smooth(method = "lm")
+```
+
+```{r}
+Green_Rescale %>% 
+  ggplot() +
+  aes(x = green_pomp, y = intel_pomp, color = student) +
+  geom_jitter(alpha = .2, size = 8) +
+  geom_smooth(method = "lm")
+```
+
+```{r}
+Green_Rescale %>% 
+  ggplot() +
+  aes(x = green_pomp, y = open_pomp, color = student) +
+  geom_jitter(alpha = .2, size = 8) +
+  geom_smooth(method = "lm")
+```
+
+
+- In this section I am comparing the relationship between the green data against the personality traits. I am also using na.omit to remove all of the incomplete cases within the data set. 
+
 ##6)
 Compare **green reputation** for students and non-students using a **rainfall plot** (bar + density + data points).
+
+```{r} 
+Green_Rescale %>%
+  ggplot() +
+  aes(x = green_pomp, color = student, fill = student) +
+  geom_bar()
+```
+
+
+```{r} 
+Green_Rescale %>% 
+  group_by(student) %>% 
+  summarize(across(green_pomp:open_pomp,
+  list(mean = ~ mean(.x, na.rm= TRUE),
+                sd = ~ sd(.x, na.rm = TRUE),
+                min = ~ min(.x, na.rm = TRUE),
+                max = ~ max(.x, na.rm = TRUE))))
+```
+
+```{r}
+Summary_Table <- Green_Rescale %>% 
+  group_by(student) %>% 
+  summarize(across(green_pomp:open_pomp,
+  list(mean = ~ mean(.x, na.rm= TRUE),
+                sd = ~ sd(.x, na.rm = TRUE),
+                min = ~ min(.x, na.rm = TRUE),
+                max = ~ max(.x, na.rm = TRUE))))
+
+```
  
 #7) 
 Compute a summary table of means, SDs, medians, minima, and maxima for the four total scores for students and non-students.
   
-In your assignment, prepare an RMarkdown file that includes both the coding and (for 4-7) narrative descriptions of your results.
+```{r} 
+Green_Rescale%>%
+  ggplot() +
+  aes(x = green_pomp, color = student, fill = student) +
+  geom_bar()
+```
