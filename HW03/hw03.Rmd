@@ -3,14 +3,14 @@ title: "HW03"
 author: "Elena Burkey"
 date: "2/22/2021"
 output: 
+  github_document: default
   html_document:
     theme: paper
-  github_document: default
 ---
 
 
 
-```{r setup, include = False}
+```{r setup, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 dictionary <- readr::read_csv("green_dictionary.csv")
 green_data <- readr::read_csv("green_data.csv")
@@ -130,19 +130,25 @@ ggplot(Green_Rescale) +
   geom_histogram(fill = "green", fill = "grey") +
   theme_bw() +
   ggtitle("Green Data")
+```
 
+```{r}
 ggplot(Green_Rescale) +
   aes(x = comp_pomp) +
   geom_histogram(fill = "purple", fill = "grey") +
   theme_bw() +
   ggtitle("Comp Data")
+```
 
+```{r}
 ggplot(Green_Rescale) +
   aes(x = intel_pomp) +
   geom_histogram(fill = "red", fill = "grey") +
   theme_bw() +
   ggtitle("Intel Data")
+```
 
+```{r}
 ggplot(Green_Rescale) +
   aes(x = open_pomp) +
   geom_histogram(fill = "blue", fill = "grey") +
@@ -157,14 +163,23 @@ Make scatterplots showing the relationships between **green reputation** and eac
      Include trend lines for **students** and **non-students**.
      What do these plots show?
 ```{r} 
+Green_Rescale %>%
+  mutate(student = recode(student, "1" = "Not_Student", "2" = "Student"))
 
+ggplot(na.omit(Green_Rescale))+
+  aes(x = green_pomp, y = comp_pomp, fill = student, color = student) + 
+  geom_point()
 ```
+
+- In this section I am comparing the relationship between the green data against the personality traits. I am also using na.omit to remove all of the incomplete cases within the data set. 
 
 ##6)
 Compare **green reputation** for students and non-students using a **rainfall plot** (bar + density + data points).
 
 ```{r} 
-
+ggplot(na.omit(Green_Rescale)) +
+  aes(x = green_pomp, fill = student, color = student) +
+  geom_jitter(height = .30) +
 ```
  
 #7) 
