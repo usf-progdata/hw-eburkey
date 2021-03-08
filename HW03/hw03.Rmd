@@ -8,7 +8,8 @@ output:
     theme: paper
 ---
 
-
+<!-- BMW: Your document doesn't knit. There is an error. Please be sure that the script can run through to completion without errors (as well as with the correct results. You can see when the knitting fails that there is an error in the chunk beginning at line 55.
+-->
 
 ```{r setup, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -18,7 +19,7 @@ library(tibble)
 library(ggplot2)
 library(tidyverse)
 library(gridExtra)
-library(reshape2)
+library(reshape2) # BMW: Don't use reshape2 and tidyverse packages (eg, dplyr or tidyr) together in the same script. reshape2 isn't supported anymore, and I suggest moving to using tidyr::pivot_longer() and tidyr::pivot_wider() like we practiced in class instead.
 library(ggdist)
 library(psychTools)
 library(gridExtra)
@@ -34,14 +35,17 @@ The dataset includes data from **students** and **non-students**.
 Inspect the item responses (e.g., with graphs or by summarizing distinct values).     Is anything unusual?
 
 ```{r}
-as_tibble(green_data)
+as_tibble(green_data) # BMW: Don't print out whole datasets like this in your final script. 
 ```
 
 - Looking at the data set it seems that there are quite a bit of NA values. 
 
 ```{r}
-green_data.melt <- melt(green_data, measures.var = across (c:green1:open10))
+green_data.melt <- melt(green_data, measures.var = across (c:green1:open10)) # BMW: I strongly recommend not using melt. It isn't maintained anymore. pivot_longer() and pivot_wider() are the replacements for melt/cast
+
+# BMW: As a stylistic note, avoid using . in object names. '.' sometimes has special meaning in R, and it's best to avoid and using camelCase or snake_case format names instead.
 ```
+
 
 - Brings the data from columns to rows by using the melt function and will show everything in the data set in such a manner that it's easily readable. 
 
@@ -53,7 +57,8 @@ summary(green_data.melt)
 
 ```{r}
 ggplot(green_data.melt) +
-  aes(X = id, Y = value)
+  aes(x = id, y = value) + # BMW: You were missing a + here
+                           # BMW: Also, x and y need to be lowercase. Arguments in R are case-sensitive (uppercase vs lowercase matters). In most cases, R functions and arguments are all lowercase.
   geom_point(alpha = 0.1) +
   theme_bw()
 ```
@@ -77,7 +82,7 @@ Green_New <- green_data %>%
 ```{r}
 green_data %>%
   mutate(across(everything(),
-                ~ na_if(.x, -99)))
+                ~ na_if(.x, -99))) # BMW: You didn't assign this result, so the `green_data` object still contains -99 values. This messes up all of your later results. 
 ```
 
 - Taking away  the -99 values and coding them into missing data 
@@ -94,6 +99,9 @@ Green_R <- green_data %>%
 ```
 
 - Recoded the data to organize it properly and categorize it in a way that is more clear 
+
+<!-- BMW: You need a space between text and code chunks. -->
+
 ```{r}
 new_green_data <- green_data %>%
   mutate(across(everything(),
@@ -111,29 +119,113 @@ new_green_data <- green_data %>%
 ```{r}
 Data1 <- new_green_data %>%
   rowwise() %>%
-  mutate(tot_green = mean(c(green1, green2r, green3, green4, green5), na.rm = TRUE),
-         tot_comp = mean(c(comp1, comp2, comp3, comp4, comp5, comp6r, comp7r, comp8r, comp9r, comp10r),
-                         na.rm = TRUE),
-         tot_intel = mean(c(intel1, intel2, intel3, intel4, intel5, intel6, intel7r, intel8r, intel9r, intel10r),
-                          na.rm = TRUE),
-         tot_open = mean(c(open1, open2, open3, open4, open5, open6, open7r, open8r, open9r, open10r),
-                         na.rm = TRUE)) %>%
+  mutate(
+    tot_green = mean(c(green1, green2r, green3, green4, green5), na.rm = TRUE),
+    tot_comp = mean(
+      c(
+        comp1,
+        comp2,
+        comp3,
+        comp4,
+        comp5,
+        comp6r,
+        comp7r,
+        comp8r,
+        comp9r,
+        comp10r
+      ),
+      na.rm = TRUE
+    ),
+    tot_intel = mean(
+      c(
+        intel1,
+        intel2,
+        intel3,
+        intel4,
+        intel5,
+        intel6,
+        intel7r,
+        intel8r,
+        intel9r,
+        intel10r
+      ),
+      na.rm = TRUE
+    ),
+    tot_open = mean(
+      c(
+        open1,
+        open2,
+        open3,
+        open4,
+        open5,
+        open6,
+        open7r,
+        open8r,
+        open9r,
+        open10r
+      ),
+      na.rm = TRUE
+    )
+  ) %>%
   na.omit() %>%
   select(id, tot_green, tot_comp, tot_open, tot_intel, student)
 ```
 
 ```{r}
-  New_Data <- new_green_data %>% 
-  rowwise() %>% 
-  mutate(tot_green = mean(c(green1, green2r, green3, green4, green5), na.rm = TRUE),
-         tot_comp = mean(c(comp1, comp2, comp3, comp4, comp5, comp6r, comp7r, comp8r, comp9r, comp10r), 
-                         na.rm = TRUE),
-         tot_intel = mean(c(intel1, intel2, intel3, intel4, intel5, intel6, intel7r, intel8r, intel9r, intel10r),
-                          na.rm = TRUE),
-         tot_open = mean(c(open1, open2, open3, open4, open5, open6, open7r, open8r, open9r, open10r), 
-                         na.rm = TRUE)) %>% 
+New_Data <- new_green_data %>%
+  rowwise() %>%
+  mutate(
+    tot_green = mean(c(green1, green2r, green3, green4, green5), na.rm = TRUE),
+    tot_comp = mean(
+      c(
+        comp1,
+        comp2,
+        comp3,
+        comp4,
+        comp5,
+        comp6r,
+        comp7r,
+        comp8r,
+        comp9r,
+        comp10r
+      ),
+      na.rm = TRUE
+    ),
+    tot_intel = mean(
+      c(
+        intel1,
+        intel2,
+        intel3,
+        intel4,
+        intel5,
+        intel6,
+        intel7r,
+        intel8r,
+        intel9r,
+        intel10r
+      ),
+      na.rm = TRUE
+    ),
+    tot_open = mean(
+      c(
+        open1,
+        open2,
+        open3,
+        open4,
+        open5,
+        open6,
+        open7r,
+        open8r,
+        open9r,
+        open10r
+      ),
+      na.rm = TRUE
+    )
+  ) %>%
   na.omit()
 ```
+
+<!-- BMW: The above 2 chunks seem redundant. What is each for? -->
 
 ```{r}
 New_Data %>% 
@@ -152,14 +244,26 @@ Rescale the variables so that they go from 0-100 instead of the original range.
      Name the recaled variables `*_pomp`.
 
 ```{r}
-Green_Rescale <- green_data %>%
-  mutate(across(all_of(reversed), ~ recode(.x, "1" = 0, "2" = 25, "3" = 50, "4" = 75, "5" = 100), .names = "{.col}_pomp")) %>%
+Green_Rescale <- green_data %>% # BMW: This data frame still has -99 in it.
+  mutate(across(
+    all_of(reversed),
+    ~ recode(
+      .x,
+      "1" = 0,
+      "2" = 25,
+      "3" = 50,
+      "4" = 75,
+      "5" = 100
+    ),
+    .names = "{.col}_pomp"
+  )) %>%
   rowwise() %>%
   mutate(
-    green_pomp = sum(c_across(green1 : green5), na.rm = TRUE),
-    comp_pomp = sum(c_across(comp1 : comp10), na.rm = TRUE), 
-    intel_pomp = sum(c_across(intel1 : intel10), na.rm = TRUE),
-    open_pomp = sum(c_across(open1 : open10), na.rm = TRUE))
+    green_pomp = sum(c_across(green1:green5), na.rm = TRUE),
+    comp_pomp = sum(c_across(comp1:comp10), na.rm = TRUE),
+    intel_pomp = sum(c_across(intel1:intel10), na.rm = TRUE),
+    open_pomp = sum(c_across(open1:open10), na.rm = TRUE)
+  )
 ```
 
 - I recoded the variables so that it went from  0-100 and then rescaled the items. 
@@ -170,7 +274,7 @@ Make plots that illustrate the distributions of the 4 POMP-scored variables.
 ```{r}
 ggplot(Green_Rescale) +
   aes(x = green_pomp) +
-  geom_histogram(fill = "green", fill = "grey") +
+  geom_histogram(fill = "green", fill = "grey") + # BMW: You've got two fill arguments here. Also note that the "green" color in R is pretty radioactive. You might prefer "darkgreen" or "forestgreen"
   theme_bw() +
   ggtitle("Green Data")
 ```
@@ -178,7 +282,7 @@ ggplot(Green_Rescale) +
 ```{r}
 ggplot(Green_Rescale) +
   aes(x = comp_pomp) +
-  geom_histogram(fill = "purple", fill = "grey") +
+  geom_histogram(fill = "purple", fill = "grey") + # BMW: Again, you've got two fill arguments. Do you mean color = "grey" ?
   theme_bw() +
   ggtitle("Comp Data")
 ```
@@ -186,7 +290,7 @@ ggplot(Green_Rescale) +
 ```{r}
 ggplot(Green_Rescale) +
   aes(x = intel_pomp) +
-  geom_histogram(fill = "red", fill = "grey") +
+  geom_histogram(fill = "red", fill = "grey") + # BMW: Same. 
   theme_bw() +
   ggtitle("Intel Data")
 ```
@@ -194,21 +298,23 @@ ggplot(Green_Rescale) +
 ```{r}
 ggplot(Green_Rescale) +
   aes(x = open_pomp) +
-  geom_histogram(fill = "blue", fill = "grey") +
+  geom_histogram(fill = "blue", fill = "grey") + # BMW: same.
   theme_bw() +
   ggtitle("Open Data")
 ```
 
 - Looking at the different graphs, all of the graphs except for the Green Data graph were not equally distributed. 
 
-##5)
+<!-- BMW: You need a space after the ## for markdown headings -->
+## 5) 
 Make scatterplots showing the relationships between **green reputation** and each personality trait.
      Include trend lines for **students** and **non-students**.
      What do these plots show?
+     
 ```{r} 
 Green_Rescale %>% 
   ggplot() +
-  aes(x = green_pomp, y = comp_pomp, color = student) +
+  aes(x = green_pomp, y = comp_pomp, color = student) + # BMW There is definitely something wrong with your comp_pomp variable. One of the points has a value of -682 something. 
   geom_jitter(alpha = .2, size = 8) +
   geom_smooth(method = "lm")
 ```
@@ -238,8 +344,34 @@ Compare **green reputation** for students and non-students using a **rainfall pl
 ```{r} 
 Green_Rescale %>%
   ggplot() +
-  aes(x = green_pomp, color = student, fill = student) +
-  geom_bar()
+  aes(x = green_pomp, color = student, fill = student) + # BMW: student is still a numeric variable here, so the plot isn't colored by student as you expect. student needs to be a factor variable.
+  geom_bar(alpha = .3)
+```
+
+<!-- BMW: The question asked for a rainfall plot. This isn't what was asked for. See below. -->
+
+```{r} 
+Green_Rescale %>%
+  filter(across(everything(), ~ .x >= 0)) %>% # BMW: Removing negative values that should have been recoded as missing.
+  mutate(student = factor(student, levels = c(1, 2), labels = c("No", "Yes"))) %>% 
+  ggplot() +
+  aes(x = green_pomp, 
+      y = student,
+      color = student, 
+      fill = student) + 
+  geom_jitter(height = .15) +
+  geom_boxplot(
+    color = "black",
+    alpha = .3 ,
+    width = .1 ,
+    size = .5
+  ) +
+  ggdist::stat_sample_slabinterval(
+    height = .3,
+    color = "black", 
+    slab_alpha = .3 ,
+    position = position_nudge(y = .2)
+  )
 ```
 
 
@@ -263,6 +395,7 @@ Summary_Table <- Green_Rescale %>%
                 max = ~ max(.x, na.rm = TRUE))))
 
 ```
+ <!-- BMW: These two chunks seem redudant. Why both? -->
  
 #7) 
 Compute a summary table of means, SDs, medians, minima, and maxima for the four total scores for students and non-students.
