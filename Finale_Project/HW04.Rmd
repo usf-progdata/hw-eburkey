@@ -14,16 +14,14 @@ library(readr)
 ## Unemployment Rate in Florida 
 
 
-
-```{r cars}
-id(!dir.exists(here::here("Finale_Project", "data")))
+```{r}
+if(!dir.exists(here::here("Finale_Project", "data")))
 {dir.create(here::here("Finale_Project", "data", "FLUR.csv"))}
 ```
 
-## Including Plots
 
 
-```{r pressure, echo=FALSE}
+```{r}
 
 ```
 
