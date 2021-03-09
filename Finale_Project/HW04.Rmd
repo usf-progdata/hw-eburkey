@@ -14,16 +14,18 @@ library(tidyverse)
 library(readr)
 ```
 
-## Unemployment Rate in Florida 
-
+## Unemployment Rates in Florida 
 
 ```{r}
 if(!dir.exists(here::here("Finale_Project", "data")))
-{dir.create(here::here("Finale_Project", "data", "FLUR.csv"))}
+{dir.create(here::here("Finale_Project", "data", "Unemployment_Rate.csv"))}
 ```
 
 ```{r}
-Data_FL <- read_csv(here::here("Finale_Project", "data", "FLUR.csv"))
+Data_FL <- read_csv(here::here("Finale_Project", "data", "Unemployment_Rate.csv"))
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+as_tibble(Data_FL)
+```
+
