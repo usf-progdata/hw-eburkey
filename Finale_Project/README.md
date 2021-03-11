@@ -7,6 +7,7 @@
 
 The 26 different variables in this data set 
 | Variable | Value |
+| --------- | ------- |
 | OBJECTID | 1-4245 |
 | Geography | Locations within the different counties; 	
 Census Tract 204.11, Broward County, Florida to Census Tract 686.02, Brevard County, Florida |
