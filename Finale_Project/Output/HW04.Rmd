@@ -4,8 +4,8 @@ author: "Elena Burkey"
 date: "3/8/2021"
 output:
   html_document:
-    theme: Paper
-  gitub_document: default
+    theme: paper
+  github_document: default
 ---
 
 ```{r setup, include=FALSE}
